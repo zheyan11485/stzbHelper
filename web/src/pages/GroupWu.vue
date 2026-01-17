@@ -48,6 +48,9 @@ onMounted(() => {
                     padding: 0 8px;
                     box-sizing: border-box;">
                     <router-link class="button" to="/">返回</router-link>
+                    <router-link class="button" to="/wuHistory">
+                        历史武勋
+                    </router-link>
                     <a class="button" @click="getData">
                         刷新
                     </a>

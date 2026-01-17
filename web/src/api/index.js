@@ -60,3 +60,12 @@ export function ApiEnableGetBattleReport(){
 export function ApiDisableGetBattleReport(){
     return api.get(`disable/getBattleReport`);
 }
+
+export function ApiGetWuHistory(params = {}) { 
+    const queryParams = new URLSearchParams();
+    if (params.group) queryParams.append('group', params.group);
+    if (params.start_date) queryParams.append('start_date', params.start_date);
+    if (params.end_date) queryParams.append('end_date', params.end_date);
+    
+    return api.get(`getWuHistory?${queryParams.toString()}`);
+}

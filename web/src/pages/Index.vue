@@ -1,34 +1,34 @@
 <script setup>
-import { Star, Link, Server, KeyRound, Plus, BotMessageSquare,Users,ClipboardList,Swords,UserRoundSearch } from 'lucide-vue-next';
+import { Star, Link, Server, KeyRound, Plus, BotMessageSquare, Users, ClipboardList, Swords, UserRoundSearch, TrendingUp } from 'lucide-vue-next';
 import { ref } from "vue";
-import { useMessage,NDivider } from 'naive-ui'
-import { ApiEnableGetBattleReport,ApiDisableGetBattleReport } from '../api';
+import { useMessage, NDivider } from 'naive-ui'
+import { ApiEnableGetBattleReport, ApiDisableGetBattleReport } from '../api';
 const isLogin = ref(true);
 const nmessage = useMessage()
-const EnableGetBattleReport = () =>{
+
+const EnableGetBattleReport = () => {
     ApiEnableGetBattleReport().then(v => {
-        if(v.data.code == 200){
+        if (v.data.code == 200) {
             nmessage.success("开启成功")
-        }else{
+        } else {
             nmessage.error(v.data.msg);
         }
     }).catch(e => {
-        nmessage.error("开启获取战报详情失败:"+e);
+        nmessage.error("开启获取战报详情失败:" + e);
     });
 }
 
-const DisableGetBattleReport = () =>{
+const DisableGetBattleReport = () => {
     ApiDisableGetBattleReport().then(v => {
-        if(v.data.code == 200){
+        if (v.data.code == 200) {
             nmessage.success("关闭成功")
-        }else{
+        } else {
             nmessage.error(v.data.msg);
         }
     }).catch(e => {
-        nmessage.error("关闭获取战报详情失败:"+e);
+        nmessage.error("关闭获取战报详情失败:" + e);
     });
 }
-
 </script>
 
 <template>
@@ -38,7 +38,7 @@ const DisableGetBattleReport = () =>{
                 <h2 style="margin-bottom: 4px;">率土之滨助手</h2>
                 <p>Version: 0.0.3</p>
             </div>
-            <div style="margin: 16px auto;padding: 16px;">
+            <div style="margin: 16px auto;padding: 16px;" v-if="!showHistoryPanel">
                 <div style="font-size: 18px;font-weight: 600;padding-left: 4px;">控制面板</div>
                 <div style="border: 1px solid rgba(228, 228, 231, 0.6); padding: 16px;display: flex;flex-wrap: wrap;flex-direction: column;">
                     <div style="padding: 8px;margin: 8px;flex-shrink: 0;">
@@ -51,7 +51,7 @@ const DisableGetBattleReport = () =>{
                     </div>
                 </div>
             </div>
-            <n-divider />
+            <n-divider v-if="!showHistoryPanel" />
             <div class="bikamoeapp-list" v-if="isLogin">
                 <div class="bikamoeapp-appitem-warp">
                     <div class="item">
@@ -89,6 +89,17 @@ const DisableGetBattleReport = () =>{
                 <div class="bikamoeapp-appitem-warp">
                     <div class="item">
                         <div class="icon">
+                            <TrendingUp :size="64" />
+                        </div>
+                        <div class="bottom">
+                            <div class="name">历史武勋</div>
+                            <router-link class="button" to="/wuHistory">进入</router-link>
+                        </div>
+                    </div>
+                </div>
+                <div class="bikamoeapp-appitem-warp">
+                    <div class="item">
+                        <div class="icon">
                             <UserRoundSearch :size="64" />
                         </div>
                         <div class="bottom">
@@ -102,4 +113,12 @@ const DisableGetBattleReport = () =>{
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+a.button {
+    border-bottom: 1px solid rgb(228 228 231 / 60%);
+    margin-right: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 4px 8px;
+}
+</style>

@@ -35,4 +35,6 @@ func Register(r *gin.RouterGroup) {
 	r.Any("enable/getBattleReport", api.EnableGetBattleData)
 	// 关闭获取战报详情
 	r.Any("disable/getBattleReport", api.DisableGetBattleData)
+	// 获取武勋历史数据
+	r.Any("getWuHistory", api.GetWuHistory)
 }

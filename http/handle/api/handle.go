@@ -291,6 +291,38 @@ func GetGroupWu(c *gin.Context) {
 	common.Response{Data: stats}.Success(c)
 }
 
+func GetWuHistory(c *gin.Context) {
+	var histories []model.WuHistoryWeek
+
+	// 获取参数
+	groupName := c.Query("group")
+	startDate := c.Query("start_date")
+	endDate := c.Query("end_date")
+
+	query := model.Conn.Order("record_date DESC, total_wu DESC")
+
+	if groupName != "" {
+		query = query.Where("group_name = ?", groupName)
+	}
+
+	if startDate != "" {
+		query = query.Where("record_date >= ?", startDate+" 00:00:00")
+	}
+
+	if endDate != "" {
+		query = query.Where("record_date <= ?", endDate+" 23:59:59")
+	}
+
+	err := query.Find(&histories).Error
+
+	if err != nil {
+		common.Response{Message: "查询失败: " + err.Error()}.Error(c)
+		return
+	}
+
+	common.Response{Data: histories}.Success(c)
+}
+
 func DelTaskReport(c *gin.Context) {
 
 	tid := c.Param("tid")

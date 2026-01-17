@@ -381,6 +381,13 @@ func parseTeamUser(data []byte) {
 		log.Println("同盟成员消息解析成功！共" + strconv.Itoa(len(teamUsers)) + "人")
 		model.Conn.Save(teamUsers)
 		model.Conn.Not("id", ids).Delete(model.TeamUser{})
+
+		// 在同盟成员消息解析成功后保存历史数据
+		if err := model.SaveGroupWuHistory(); err != nil {
+			log.Printf("保存武勋历史数据失败: %v", err)
+		} else {
+			log.Println("武勋历史数据保存成功")
+		}
 	} else {
 		log.Println("解析同盟成员消息失败")
 	}

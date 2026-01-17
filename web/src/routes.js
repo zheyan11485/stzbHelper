@@ -3,6 +3,7 @@ import Index from './pages/Index.vue';
 import TeamUser from './pages/TeamUser.vue';
 import Task from './pages/Task.vue';
 import GroupWu from './pages/GroupWu.vue';
+import WuHistory from './pages/WuHistory.vue';
 
 const routes = [
     { 
@@ -21,6 +22,10 @@ const routes = [
     {
         path: '/groupWu',
         component: GroupWu
+    },
+    {
+        path: '/wuHistory',
+        component: WuHistory
     }
 ]
 
