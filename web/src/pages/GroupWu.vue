@@ -1,12 +1,11 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import {  useMessage, useDialog,NTable } from 'naive-ui'
+import { ref, onMounted, h } from "vue";
+import {  useMessage, useDialog, NDataTable } from 'naive-ui'
 import { ApiGetGroupWu } from '@/api'
 import * as XLSX from 'xlsx';
 
 const nmessage = useMessage()
 const groupdata = ref([])
-
 
 function getData() {
     groupdata.value = [];
@@ -28,6 +27,19 @@ function getData() {
 onMounted(() => {
     getData();
 });
+
+// 定义自定义排序图标
+function renderSorterIcon({ order }) {
+  if (order === false) {
+    return h('span', { style: { color: '#666' } }, '↕')
+  }
+  if (order === 'ascend') {
+    return h('span', { style: { color: '#333' } }, '↑')
+  }
+  if (order === 'descend') {
+    return h('span', { style: { color: '#333' } }, '↓')
+  }
+}
 </script>
 
 <template>
@@ -56,26 +68,29 @@ onMounted(() => {
                     </a>
                 </div>
                 <div>
-                   <n-table>
-                        <thead>
-                            <tr>
-                                <th>分组名称</th>
-                                <th>人数</th>
-                                <th>总武勋</th>
-                                <th>平均武勋</th>
-                                <th>0武勋人数</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="u in groupdata">
-                                <td>{{ u.group }}</td>
-                                <td>{{ u.member_count }}</td>
-                                <td>{{ u.total_wu }}</td>
-                                <td>{{ u.average_wu }}</td>
-                                <td>{{ u.zero_wu_count }}</td>
-                            </tr>
-                        </tbody>
-                    </n-table>
+                  <n-data-table
+                    :columns="[
+                      { title: '分组名称', key: 'group' },
+                      { title: '人数', key: 'member_count' },
+                      { 
+                        title: '总武勋', 
+                        key: 'total_wu', 
+                        sorter: (row1, row2) => row1.total_wu - row2.total_wu,
+                        defaultSortOrder: false,
+                        renderSorterIcon: renderSorterIcon
+                      },
+                      { 
+                        title: '平均武勋', 
+                        key: 'average_wu', 
+                        sorter: (row1, row2) => row1.average_wu - row2.average_wu,
+                        defaultSortOrder: false,
+                        renderSorterIcon: renderSorterIcon
+                      },
+                      { title: '0武勋人数', key: 'zero_wu_count' }
+                    ]"
+                    :data="groupdata"
+                    :pagination="{ pageSize: 100 }"
+                    />
                 </div>
             </div>
 
