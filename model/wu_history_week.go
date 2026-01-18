@@ -52,14 +52,16 @@ func SaveGroupWuHistory() error {
 	}
 
 	currentTime := time.Now()
-	currentDateStr := currentTime.Format("2006-01-02")
+	// 只保留日期部分，确保时间部分为00:00:00
+	currentDate := time.Date(currentTime.Year(), currentTime.Month(), currentTime.Day(), 0, 0, 0, 0, currentTime.Location())
+	currentDateStr := currentDate.Format("2006-01-02")
 
 	// 使用事务确保数据一致性
 	return Conn.Transaction(func(tx *gorm.DB) error {
 		for _, stat := range stats {
 			var existingHistory WuHistoryWeek
-			// 使用 SQLite 的 date() 函数进行精确的日期匹配
-			result := tx.Where("date(record_date) = ? AND group_name = ?", currentDateStr, stat.Group).First(&existingHistory)
+			// 使用更明确的日期比较，确保只匹配同一天的记录
+			result := tx.Where("strftime('%Y-%m-%d', record_date) = ? AND group_name = ?", currentDateStr, stat.Group).First(&existingHistory)
 
 			if result.Error != nil {
 				// 检查是否是因为记录未找到
@@ -72,7 +74,7 @@ func SaveGroupWuHistory() error {
 						TotalWu:     stat.TotalWu,
 						AverageWu:   stat.AverageWu,
 						ZeroWuCount: stat.ZeroWuCount,
-						RecordDate:  currentTime,
+						RecordDate:  currentDate, // 使用规范化后的日期
 						CreatedAt:   currentTime,
 					}
 					if err := tx.Create(&history).Error; err != nil {
@@ -88,7 +90,7 @@ func SaveGroupWuHistory() error {
 				existingHistory.TotalWu = stat.TotalWu
 				existingHistory.AverageWu = stat.AverageWu
 				existingHistory.ZeroWuCount = stat.ZeroWuCount
-				existingHistory.RecordDate = currentTime
+				existingHistory.RecordDate = currentDate // 使用规范化后的日期
 				if err := tx.Save(&existingHistory).Error; err != nil {
 					return err
 				}

@@ -63,6 +63,16 @@ function getAllGroups() {
     });
 }
 
+// 计算今天的数据
+function getTodayData() {
+    // 计算今天的日期
+    const today = new Date();
+    
+    // 设置日期选择器的值为今天
+    startDate.value = today.getTime();
+    endDate.value = today.getTime();
+}
+
 // 计算本周一到周日的数据
 function getThisWeekData() {
     // 计算本周周一和周日的日期
@@ -81,9 +91,6 @@ function getThisWeekData() {
     // 设置日期选择器的值
     startDate.value = monday.getTime();
     endDate.value = sunday.getTime();
-    
-    // 立即查询数据
-    getHistoryData();
 }
 
 // 计算上周一到周日的数据
@@ -104,12 +111,7 @@ function getLastWeekData() {
     // 设置日期选择器的值
     startDate.value = lastMonday.getTime();
     endDate.value = lastSunday.getTime();
-    
-    // 立即查询数据
-    getHistoryData();
 }
-
-
 
 // 计算前一天的总武勋值，用于趋势比较
 function getPrevDayWu(index, group) {
@@ -146,6 +148,9 @@ onMounted(() => {
                     padding: 0 8px;
                     box-sizing: border-box; flex-wrap: wrap;">
                     <router-link class="button" to="/">返回</router-link>
+                    <a class="button" @click="getTodayData">
+                        今天数据
+                    </a>
                     <a class="button" @click="getThisWeekData">
                         本周数据
                     </a>
